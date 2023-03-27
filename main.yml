@@ -22,8 +22,10 @@
           - psycopg2
 
     - name: install airflow
-      command: export AIRFLOW_HOME="/var/www/airflow/" && airflow 
-      ignore_errors: true
+      shell: |
+        export AIRFLOW_HOME="/var/www/airflow/"
+        airflow 
+      
 
 
     - name: Execute psql
