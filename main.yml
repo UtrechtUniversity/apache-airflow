@@ -25,6 +25,7 @@
       shell: |
         export AIRFLOW_HOME="/var/www/airflow/"
         airflow 
+      ignore_errors: true
       
 
 
