@@ -6,7 +6,7 @@ Wants=postgresql.service
 [Service]
 Environment="AIRFLOW_HOME=/www.var/airflow"
 Type=simple
-ExecStart=/bin/bash -c 'airflow webscheduler'
+ExecStart=/bin/bash -c 'sudo airflow webscheduler'
 Restart=on-failure
 RestartSec=5s
 PrivateTmp=true
