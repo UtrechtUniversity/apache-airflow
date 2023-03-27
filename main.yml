@@ -1,0 +1,97 @@
+---
+  - name: "Installing Airflow"
+    hosts: localhost
+    become: true
+    become_user: root 
+    tasks:
+
+    - name: Install libpqdev
+      apt:
+        name: 
+          - libpq-dev
+          - postgresql 
+          - postgresql-contrib 
+
+    - name: Install Airflow packages
+      ansible.builtin.pip:
+        name: 
+          - apache-airflow[gcp]
+          - apache-airflow[sentry]
+          - apache-airflow[statsd] 
+          - apache-airflow[postgresql]
+          - psycopg2
+
+    - name: install airflow
+      ansible.builtin.shell:
+        cmd:  export AIRFLOW_HOME="/var/www/airflow/" && airflow 
+      ignore_errors: true
+
+
+    - name: copy postgres into folder & Execute
+      become: true
+      copy:
+        src: "postgres.sh"
+        dest: "/var/www/"
+        mode: 0755
+
+    - name: change sequential to local
+      ansible.builtin.shell:
+        cmd:  sed -i '/executor = SequentialExecutor/ s/SequentialExecutor/LocalExecutor/' ~/airflow/airflow.cfg
+
+    - name: change endpoint to postgres
+      ansible.builtin.shell:
+        cmd:  sed -i "s|sqlite:////var/www/airflow//airflow.db|postgresql+psycopg2://airflow:airflow@localhost/airflow|g" /var/www/airflow/airflow.cfg       
+
+    - name: init db
+      ansible.builtin.shell:
+        cmd:  airflow db init
+      ignore_errors: true
+
+    - name: install airflow db user
+      ansible.builtin.shell:
+        cmd:  ./postgres.sh
+        chdir: /var/www/
+
+    - name: copy webserver
+      become: true
+      copy:
+        src: "airflow-webserver.service"
+        dest: "/etc/systemd/system/"
+        mode: 0755
+
+    - name: copy scheduler
+      become: true
+      copy:
+        src: "airflow-scheduler.service"
+        dest: "/etc/systemd/system/"
+        mode: 0755
+      ignore_errors: true
+      
+    - name: Reload Daemon & enable services
+      ansible.builtin.shell:
+        cmd:  systemctl daemon-reload && systemctl enable airflow-webserver.service && sudo systemctl enable airflow-scheduler.service
+      ignore_errors: true
+
+    - name: Start webserver
+      ansible.builtin.shell:
+        cmd:  systemctl start airflow-webserver.service
+      ignore_errors: true
+
+    - name: Start scheduler
+      ansible.builtin.shell:
+        cmd:  sudo systemctl start airflow-scheduler.service
+      ignore_errors: true
+
+    - name: Configure ssl_main.conf
+      blockinfile:
+        path: /etc/nginx/conf.d/ssl_main.conf
+        insertafter: 'ssl_dhparam\s/etc/letsencrypt/ssl-dhparams.pem;\s#\smanaged\sby\sCertbot'
+        content: "location / {
+                  proxy_pass http://localhost:8080;
+                  proxy_set_header Host $http_host;
+                  proxy_redirect off;
+                  proxy_http_version 1.1;
+                  proxy_set_header Upgrade $http_upgrade;
+                  proxy_set_header Connection 'upgrade';}"
+
+  
