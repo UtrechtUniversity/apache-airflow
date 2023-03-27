@@ -22,8 +22,7 @@
           - psycopg2
 
     - name: install airflow
-      ansible.builtin.shell:
-        cmd:  export AIRFLOW_HOME="/var/www/airflow/" && airflow 
+      command: export AIRFLOW_HOME="/var/www/airflow/" && airflow 
       ignore_errors: true
 
 
@@ -35,21 +34,17 @@
         mode: 0755
 
     - name: change sequential to local
-      ansible.builtin.shell:
-        cmd:  sed -i '/executor = SequentialExecutor/ s/SequentialExecutor/LocalExecutor/' ~/airflow/airflow.cfg
+      command: sed -i '/executor = SequentialExecutor/ s/SequentialExecutor/LocalExecutor/' ~/airflow/airflow.cfg
 
     - name: change endpoint to postgres
-      ansible.builtin.shell:
-        cmd:  sed -i "s|sqlite:////var/www/airflow//airflow.db|postgresql+psycopg2://airflow:airflow@localhost/airflow|g" /var/www/airflow/airflow.cfg       
+      command: sed -i "s|sqlite:////var/www/airflow//airflow.db|postgresql+psycopg2://airflow:airflow@localhost/airflow|g" /var/www/airflow/airflow.cfg       
 
     - name: init db
-      ansible.builtin.shell:
-        cmd:  airflow db init
+      command: airflow db init
       ignore_errors: true
 
     - name: install airflow db user
-      ansible.builtin.shell:
-        cmd:  ./postgres.sh
+      command: ./postgres.sh
         chdir: /var/www/
 
     - name: copy webserver
@@ -68,18 +63,15 @@
       ignore_errors: true
       
     - name: Reload Daemon & enable services
-      ansible.builtin.shell:
-        cmd:  systemctl daemon-reload && systemctl enable airflow-webserver.service && sudo systemctl enable airflow-scheduler.service
+      command: systemctl daemon-reload && systemctl enable airflow-webserver.service && sudo systemctl enable airflow-scheduler.service
       ignore_errors: true
 
     - name: Start webserver
-      ansible.builtin.shell:
-        cmd:  systemctl start airflow-webserver.service
+      command: systemctl start airflow-webserver.service
       ignore_errors: true
 
     - name: Start scheduler
-      ansible.builtin.shell:
-        cmd:  sudo systemctl start airflow-scheduler.service
+      command: systemctl start airflow-scheduler.service
       ignore_errors: true
 
     - name: Configure ssl_main.conf
