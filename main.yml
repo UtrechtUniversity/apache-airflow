@@ -68,8 +68,15 @@
         mode: 0755
       ignore_errors: true
       
-    - name: Reload Daemon & enable services
-      command: systemctl daemon-reload && systemctl enable airflow-webserver.service && sudo systemctl enable airflow-scheduler.service
+#     - name: Reload Daemon & enable services
+#       command: systemctl daemon-reload && systemctl enable airflow-webserver.service && sudo systemctl enable airflow-scheduler.service
+#       ignore_errors: true
+      
+    - name: Reload Daemon & Enable services
+      shell: |
+        systemctl daemon-reload
+        systemctl enable airflow-webserver.service
+        systemctl enable airflow-scheduler.service
       ignore_errors: true
 
     - name: Start webserver
@@ -91,5 +98,8 @@
                   proxy_http_version 1.1;
                   proxy_set_header Upgrade $http_upgrade;
                   proxy_set_header Connection 'upgrade';}"
-
+                  
+    - name: Start scheduler
+      command: systemctl restart nginx
+      ignore_errors: true
   
