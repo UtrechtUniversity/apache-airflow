@@ -33,7 +33,7 @@
       ignore_errors: true
 
     - name: change sequential to local
-      command: sed -i '/executor = SequentialExecutor/ s/SequentialExecutor/LocalExecutor/' ~/airflow/airflow.cfg
+      command: sed -i '/executor = SequentialExecutor/ s/SequentialExecutor/LocalExecutor/' /var/www/airflow/airflow.cfg
 
     - name: change endpoint to postgres
       command: sed -i "s|sqlite:////var/www/airflow//airflow.db|postgresql+psycopg2://airflow:airflow@localhost/airflow|g" /var/www/airflow/airflow.cfg       
