@@ -27,6 +27,8 @@
 
 
     - name: Execute psql
+      become: true
+      become_user: postgres
       command: psql -U postgres 'CREATE USER airflow PASSWORD 'airflow'; CREATE DATABASE airflow; GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO airflow;'
       ignore_errors: true
 
