@@ -40,9 +40,9 @@
       command: airflow db init
       ignore_errors: true
 
-    - name: install airflow db user
-      command: ./postgres.sh
-        chdir: /var/www/
+#     - name: install airflow db user
+#       command: ./postgres.sh
+#         chdir: /var/www/
 
     - name: copy webserver
       copy:
