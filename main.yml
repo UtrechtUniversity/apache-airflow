@@ -48,8 +48,11 @@
         warn: false 
       
     - name: init db
-      command: airflow db init
+      shell: |
+        export AIRFLOW_HOME="/var/www/airflow/"
+        airflow db init
       ignore_errors: true
+
 
 #     - name: install airflow db user
 #       command: ./postgres.sh
@@ -74,18 +77,25 @@
       
     - name: Reload Daemon & Enable services
       shell: |
+        export AIRFLOW_HOME="/var/www/airflow/"
         systemctl daemon-reload
         systemctl enable airflow-webserver.service
         systemctl enable airflow-scheduler.service
       ignore_errors: true
 
     - name: Start webserver
-      command: systemctl start airflow-webserver.service
+      shell: |
+        export AIRFLOW_HOME="/var/www/airflow/"
+        systemctl start airflow-webserver.service
       ignore_errors: true
 
+
     - name: Start scheduler
-      command: systemctl start airflow-scheduler.service
+      shell: |
+        export AIRFLOW_HOME="/var/www/airflow/"
+        systemctl start airflow-scheduler.service
       ignore_errors: true
+
 
     - name: Configure ssl_main.conf
       blockinfile:
