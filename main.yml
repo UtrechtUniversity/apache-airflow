@@ -86,7 +86,6 @@
       
     - name: Reload Daemon & Enable services
       shell: |
-        export AIRFLOW_HOME="/var/www/airflow/"
         systemctl daemon-reload
         systemctl enable airflow-webserver.service
         systemctl enable airflow-scheduler.service
@@ -94,14 +93,12 @@
 
     - name: Start webserver
       shell: |
-        export AIRFLOW_HOME="/var/www/airflow/"
         systemctl start airflow-webserver.service
       ignore_errors: true
 
 
     - name: Start scheduler
       shell: |
-        export AIRFLOW_HOME="/var/www/airflow/"
         systemctl start airflow-scheduler.service
       ignore_errors: true
 
