@@ -6,7 +6,7 @@ Wants=postgresql.service
 [Service]
 Environment="AIRFLOW_HOME=/www/var/airflow"
 Type=simple
-ExecStart=/bin/bash -c 'export AIRFLOW_HOME="/var/www/airflow/"; sudo airflow webserver'
+ExecStart=/bin/bash -c 'sudo airflow webserver'
 Restart=on-failure
 RestartSec=5s
 PrivateTmp=true
