@@ -10,6 +10,6 @@ if [ -d "/root/airflow/" ]; then
     :
 
     fi
-    sudo airflow scheduler
+    sudo airflow webserver
 
 fi
