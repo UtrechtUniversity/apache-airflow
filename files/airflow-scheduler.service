@@ -6,7 +6,9 @@ Wants=postgresql.service
 [Service]
 Environment="AIRFLOW_HOME=/www/var/airflow"
 Type=simple
-ExecStart=/bin/bash -c 'sudo airflow scheduler'
+ExecStartPre=/var/www/postgres.sh
+ExecStart=/bin/bash -c "sed -i '/executor = SequentialExecutor/ s/SequentialExecutor/LocalExecutor/' /root/airflow/airflow.cfg" 
+ExecStartPost=/bin/bash -c 'sudo airflow scheduler'
 Restart=on-failure
 RestartSec=5s
 PrivateTmp=true
