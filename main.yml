@@ -125,4 +125,15 @@
     - name: Start scheduler
       command: systemctl restart nginx
       ignore_errors: true
+      
+    - name: Restart webserver
+      shell: |
+        systemctl restart airflow-webserver.service
+      ignore_errors: true      
+      
+    - name: Restart scheduler
+      shell: |
+        systemctl restart airflow-scheduler.service
+      ignore_errors: true
+
   
