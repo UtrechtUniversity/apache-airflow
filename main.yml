@@ -27,22 +27,31 @@
         airflow 
       ignore_errors: true
       
-
+    - name: copy postgressql script
+      copy:
+        src: "postgres.sh"
+        dest: "/var/www/"
+        mode: 0755
 
     - name: Execute psql
-      become: true
-      become_user: postgres
-      command: psql -U postgres 'CREATE USER airflow PASSWORD 'airflow'; CREATE DATABASE airflow; GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO airflow;'
+      shell: |
+        sh /www/var/postgres.sh
       ignore_errors: true
 
+#     - name: Execute psql
+#       become: true
+#       become_user: postgres
+#       command: psql -U postgres 'CREATE USER airflow PASSWORD 'airflow'; CREATE DATABASE airflow; GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO airflow;'
+#       ignore_errors: true
+
     - name: change sequential to local
-      command: sed -i '/executor = SequentialExecutor/ s/SequentialExecutor/LocalExecutor/' /var/www/airflow/airflow.cfg
+      command: sed -i '/executor = SequentialExecutor/ s/SequentialExecutor/LocalExecutor/' /root/airflow/airflow.cfg
       ignore_errors: true
       args:
         warn: false 
 
     - name: change endpoint to postgres
-      command: sed -i "s|sqlite:////var/www/airflow//airflow.db|postgresql+psycopg2://airflow:airflow@localhost/airflow|g" /var/www/airflow/airflow.cfg       
+      command: sed -i "s|sqlite:////var/www/airflow//airflow.db|postgresql+psycopg2://airflow:airflow@localhost/airflow|g" /root/airflow/airflow.cfg       
       ignore_errors: true
       args:
         warn: false 
