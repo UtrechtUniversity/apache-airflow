@@ -27,6 +27,12 @@
         airflow 
       ignore_errors: true
       
+    - name: copy webserver config script
+      copy:
+        src: "config.sh"
+        dest: "/usr/bin/"
+        mode: 0755      
+        
     - name: copy postgressql script
       copy:
         src: "postgres.sh"
@@ -35,7 +41,8 @@
 
     - name: Execute psql
       shell: |
-        sh /www/var/postgres.sh
+        sh ./postgres.sh
+        chdir: /var/www
       ignore_errors: true
 
 #     - name: Execute psql
