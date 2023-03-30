@@ -10,6 +10,7 @@ if [ -d "/root/airflow/" ]; then
     :
 
     fi
+    sudo airflow db upgrade;
     sudo airflow webserver
 
 fi
