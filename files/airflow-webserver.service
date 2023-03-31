@@ -4,7 +4,7 @@ After=network.target postgresql.service
 Wants=postgresql.service
 
 [Service]
-Environment="AIRFLOW_HOME=/www/var/airflow"
+Environment="AIRFLOW_HOME=/var/www/airflow"
 Type=simple
 ExecStartPre=/bin/bash -c "export AIRFLOW_HOME="/var/www/airflow/"
 ExecStart=/usr/bin/config.sh
