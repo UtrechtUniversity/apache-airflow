@@ -3,10 +3,16 @@
     hosts: localhost
     become: true
     become_user: root 
-    vars:
-      
     
-    tasks:
+    - name: Add AIRFLOW_HOME variable
+      ansible.builtin.lineinfile:
+        path: /etc/environment
+        line: AIRFLOW_HOME=/var/www/airflow
+        insertafter: EOF
+        owner: root
+        group: root
+        mode: '0644'
+        
     - name: Install libpqdev
       apt:
         name: 
@@ -23,15 +29,7 @@
           - apache-airflow[postgresql]
           - psycopg2
 
-    - name: Check 0
-      stat:
-        path: "/root/airflow/airflow.cfg"
-      register: register_name0
-      
-    - name: Check 0.0
-      debug:
-        msg: "The file or directory exists"
-      when: register_name0.stat.exists
+
 
     - name: install airflow
       shell: |
@@ -39,16 +37,6 @@
         airflow 
       ignore_errors: true
 
-    - name: Check 1
-      stat:
-        path: "/root/airflow/airflow.cfg"
-      register: register_name1
-      
-    - name: Check 1.1
-      debug:
-        msg: "The file or directory exists"
-      when: register_name1.stat.exists
-      
     - name: copy webserver config script
       copy:
         src: "config.sh"
@@ -90,16 +78,6 @@
         export AIRFLOW_HOME="/var/www/airflow/"
         airflow db init
       ignore_errors: true
-
-    - name: Check 2
-      stat:
-        path: "/root/airflow/airflow.cfg"
-      register: register2_name
-      
-    - name: Check 2.2
-      debug:
-        msg: "The file or directory exists"
-      when: register_name2.stat.exists
 
 #     - name: install airflow db user
 #       command: ./postgres.sh
