@@ -6,7 +6,7 @@ Wants=postgresql.service
 [Service]
 Environment="AIRFLOW_HOME=/var/www/airflow"
 Type=simple
-ExecStartPre=/bin/bash -c "export AIRFLOW_HOME="/var/www/airflow/"
+ExecStartPre=/bin/bash -c "export AIRFLOW_HOME='/var/www/airflow/'"
 ExecStartPre=/bin/bash -c "sudo sh /var/www/postgres.sh"
 ExecStartPre=/bin/bash -c "sudo sed -i 's|sqlite:////root/airflow/airflow.db|postgresql+psycopg2://airflow:airflow@localhost/airflow|g' /var/www/airflow/airflow.cfg || true"
 ExecStartPre=/bin/bash -c "sed -i '/executor = SequentialExecutor/ s/SequentialExecutor/LocalExecutor/' /var/www/airflow/airflow.cfg || true" 
